@@ -21,7 +21,7 @@ import (
 	"core-healtcare.com/repository"
 	"core-healtcare.com/usecase"
 	"github.com/go-redis/redis/v8"
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
@@ -52,11 +52,11 @@ var (
 func main() {
 	l.NewLogger("core-health")
 
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v\n", err)
-		panic(err)
-	}
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	log.Fatalf("Error loading .env file: %v\n", err)
+	// 	panic(err)
+	// }
 
 	DB_NAME := os.Getenv("DB_NAME")
 	DB_USER := os.Getenv("DB_USER")
@@ -80,6 +80,10 @@ func main() {
 	url := fmt.Sprintf("0.0.0.0:%d", PORT)
 
 	db, err := config.ConnectDB(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT)
+
+	if err != nil {
+		panic(err)
+	}
 
 	rdb, err := config.ConnectRedis(REDIS_HOST, REDIS_PASSWORD, REDIS_PORT)
 
@@ -126,8 +130,6 @@ func main() {
 
 	userRepository := repository.UserRepository(db)
 	UserUsecase = usecase.UserUsecase(userRepository)
-	
-
 
 	e := echo.New()
 
